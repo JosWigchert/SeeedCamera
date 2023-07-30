@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Inverted Toggle Switch Example</title>
+  <style>
+    /* Style for the toggle switch */
+    .toggle-switch {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px;
+      /* Add some padding for better spacing */
+      border-radius: 20px;
+      /* Adjust the border radius to match the toggle height */
+    }
+
+    /* Hide the default checkbox */
+    .toggle-switch input {
+      display: none;
+    }
+
+    /* The slider (circle) for the inverted switch */
+    .toggle-switch .slider {
+      position: relative;
+      width: 30px;
+      height: 20px;
+      background-color: #ccc;
+      border-radius: 20px;
+      margin-left: 8px;
+      /* Push the slider to the left */
+    }
+
+    /* Add a dark blue background color when checked for the inverted switch */
+    .toggle-switch input:checked+.slider {
+      background-color: #2196F3;
+    }
+
+    /* Style the slider's appearance for the inverted switch */
+    .toggle-switch .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      right: 2px;
+      /* Move the circle to the right */
+      top: 2px;
+      /* Adjust the circle's position */
+      background-color: white;
+      border-radius: 50%;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    /* Move the slider to the left when checked for the inverted switch */
+    .toggle-switch input:checked+.slider:before {
+      transform: translateX(-10px);
+      /* Move the circle to the left */
+    }
+  </style>
+</head>
+
+<body>
+  <label for="toggleSwitch" class="toggle-switch">
+    Toggle Switch:
+    <input type="checkbox" id="toggleSwitch">
+    <span class="slider"></span>
+  </label>
+</body>
+
+</html>
