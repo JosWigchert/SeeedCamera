@@ -1,5 +1,4 @@
-#ifndef CAMERA_CONTROLLER_H
-#define CAMERA_CONTROLLER_H
+#pragma once
 
 #include "esp_camera.h"
 #include "FS.h"
@@ -27,4 +26,4 @@ private:
   size_t imageHeight;
 };
 
-#endif
+

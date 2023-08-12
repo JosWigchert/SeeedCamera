@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Source folder for CSS files
+css_source_folder="css/"
+
+# Source folder for JS files
+js_source_folder="."
+
+# Destination folder for copied files
+destination_folder="../data"
+
+# Create the css folder in the new root destination folder if it doesn't exist
+if [ ! -d "$destination_folder/$css_source_folder" ]; then
+    mkdir -p "$destination_folder/$css_source_folder"
+fi
+
+# Create the js folder in the new root destination folder if it doesn't exist
+if [ ! -d "$destination_folder/$js_source_folder" ]; then
+    mkdir -p "$destination_folder/$js_source_folder"
+fi
+
+# Copy CSS files to root destination folder
+find "$css_source_folder" -type f -name "*.min.css" -exec cp -v {} "$destination_folder/$css_source_folder" \;
+find "$css_source_folder" -type f -name "*.woff*" -exec cp -v {} "$destination_folder/$css_source_folder" \;
+
+# Copy JS files to root destination folder
+find "$js_source_folder" -type f -name "*.js" -exec cp -v {} "$destination_folder/$js_source_folder" \;
+
+
+find "$js_source_folder" -type f -name "*.gif" -exec cp -v {} "$destination_folder/" \;

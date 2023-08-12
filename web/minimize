@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Check if "css" directory exists
+if [ ! -d "css" ]; then
+    echo "Error: 'css' directory not found."
+    exit 1
+fi
+
+# Loop over all CSS files in "css" directory
+for css_file in css/*.css; do
+    # Check if the file exists and is not already minimized
+    if [ -e "$css_file" ] && [[ "$css_file" != *.min.css ]]; then
+        # Create the output filename by appending ".min" to the original filename
+        minified_file="${css_file%.css}.min.css"
+
+        # Run YUI Compressor on the CSS file and save the result to the minified file
+        yui-compressor "$css_file" > "$minified_file"
+
+        # Print the progress
+        echo "Minified: $css_file --> $minified_file"
+    fi
+done
+
+# # Loop over all CSS files in "css" directory
+# for js_file in *.js; do
+#     # Check if the file exists and is not already minimized
+#     if [ -e "$js_file" ] && [[ "$js_file" != *.min.js ]]; then
+#         # Create the output filename by appending ".min" to the original filename
+#         minified_file="${js_file%.js}.min.js"
+
+#         # Run YUI Compressor on the CSS file and save the result to the minified file
+#         yui-compressor --type js "$js_file" > "$minified_file"
+
+#         # Print the progress
+#         echo "Minified: $js_file --> $minified_file"
+#     fi
+# done
+
+
+echo "All CSS files have been minified."

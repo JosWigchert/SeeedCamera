@@ -1,5 +1,4 @@
-#ifndef WIFI_CONTROLLER_H
-#define WIFI_CONTROLLER_H
+#pragma once
 
 #include <WiFi.h>
 
@@ -16,4 +15,4 @@ private:
   String password;
 };
 
-#endif
+
