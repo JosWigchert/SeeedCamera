@@ -51,14 +51,12 @@ function updateValues() {
     fetch('api/values')
         .then(response => response.json())
         .then(data => {
-            console.log(data)
             // Loop over all keys in the JSON response
             for (const key in data) {
                 if (data.hasOwnProperty(key)) {
 
                     // Find the corresponding HTML element using the key as the element ID
                     const element = document.getElementById(key);
-                    console.log(element)
                     if (element) {
                         // Update the HTML element's text content with the sanitized value
                         element.textContent = data[key];
@@ -75,4 +73,12 @@ function updateValues() {
 updateValues();
 
 // Call updateSensorValues periodically (e.g., every 5 seconds)
-setInterval(updateValues, 5000); // Adjust the interval as needed
+setInterval(updateValues, 500); // Adjust the interval as needed
+
+//--------------- Get Push Values -------------------
+
+const socket = new WebSocket('ws://' + window.location.hostname + ':80/');
+
+socket.onmessage = function (event) {
+    console.log(event);
+};

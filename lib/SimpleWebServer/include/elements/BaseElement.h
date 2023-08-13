@@ -1,8 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-
-class ElementVisitor;
+#include "visitors/BaseElementVisitor.h"
 
 class BaseElement
 {
@@ -18,7 +17,5 @@ public:
     String getIdentifier();
     String getLabel();
     virtual String toString() = 0;
-    virtual void accept(ElementVisitor &visitor) = 0;
+    virtual void accept(BaseElementVisitor &visitor) = 0;
 };
-
-

@@ -1,11 +1,15 @@
 #include "SimpleWebServer.h"
 
-#include "ElementVisitor.h"
+#include "visitors/InteractableElementCallbackVisitor.h"
 
 #include <ArduinoJson.h>
 #include <SPIFFS.h>
 
 SimpleWebServer::SimpleWebServer() {}
+SimpleWebServer::~SimpleWebServer()
+{
+    delete webSocket;
+}
 
 void SimpleWebServer::begin()
 {
@@ -18,11 +22,21 @@ void SimpleWebServer::begin()
               { handleCallback(); });
     server.onNotFound([this]()
                       { handleFile(); });
+
+    webSocket = new WebSocketsServer(80);
+    webSocket->onEvent([&](uint8_t num, WStype_t type, uint8_t *payload, size_t length)
+                       { webSocketEvent(num, type, payload, length); });
+}
+
+void SimpleWebServer::stop()
+{
+    server.stop();
 }
 
 void SimpleWebServer::handleClient()
 {
     server.handleClient();
+    webSocket->loop();
 }
 
 void SimpleWebServer::addHTMLElement(Position position, BaseElement *element)
@@ -39,6 +53,22 @@ void SimpleWebServer::removeHTMLElement(Position position)
     }
 }
 
+void SimpleWebServer::addValueWatch(const char *id, void *valuePtr, ValueType valueType)
+{
+    ValueInfo valueInfo = {valuePtr, valueType};
+    addValueWatch(id, valueInfo);
+}
+
+void SimpleWebServer::addValueWatch(const char *id, ValueInfo valueInfo)
+{
+    values.emplace(id, valueInfo);
+}
+
+void SimpleWebServer::removeValueWatch(const char *id)
+{
+    values.erase(id);
+}
+
 void SimpleWebServer::handleRoot()
 {
     String response = generateHTML();
@@ -47,8 +77,38 @@ void SimpleWebServer::handleRoot()
 
 void SimpleWebServer::handleValues()
 {
-    String response = "{}";
-    server.send(200, "application/json", response);
+    StaticJsonDocument<1024> jsonBuffer;
+    JsonObject json = jsonBuffer.to<JsonObject>();
+
+    for (const auto &pair : values)
+    {
+        switch (pair.second.valueType)
+        {
+        case INT_TYPE:
+            json[pair.first] = *(int *)(pair.second.valuePtr);
+            break;
+        case FLOAT_TYPE:
+            json[pair.first] = *(float *)(pair.second.valuePtr);
+            break;
+        case DOUBLE_TYPE:
+            json[pair.first] = *(double *)(pair.second.valuePtr);
+            break;
+        case BOOL_TYPE:
+            json[pair.first] = *(bool *)(pair.second.valuePtr);
+            break;
+        case STRING_TYPE:
+            json[pair.first] = *(String *)(pair.second.valuePtr);
+            break;
+        case STD_STRING_TYPE:
+            json[pair.first] = *(std::string *)(pair.second.valuePtr);
+            break;
+        }
+    }
+
+    String jsonString;
+    serializeJson(json, jsonString);
+
+    server.send(200, "application/json", jsonString);
 }
 
 void SimpleWebServer::handleCallback()
@@ -69,8 +129,6 @@ void SimpleWebServer::handleCallback()
 
     // Get the JSON data from the request
     String jsonString = server.arg("plain");
-    Serial.println("Received JSON data:");
-    Serial.println(jsonString);
 
     // Parse the JSON data
     DynamicJsonDocument jsonDocument(1024); // Adjust the size according to your JSON data
@@ -89,7 +147,7 @@ void SimpleWebServer::handleCallback()
     const char *identifier = jsonDocument["identifier"];
     auto value = jsonDocument["value"];
 
-    ElementVisitor visitor(value);
+    InteractableElementCallbackVisitor visitor(value);
 
     for (const auto &pair : elements)
     {
@@ -202,4 +260,75 @@ String SimpleWebServer::generateHTML()
     htmlContent += "</body></html>";
     // responseContent = ""; // Reset the response content for the next request
     return htmlContent;
+}
+
+void SimpleWebServer::webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
+{
+    switch (type)
+    {
+    case WStype_DISCONNECTED:
+        Serial.printf("[%u] Disconnected!\n", num);
+        break;
+    case WStype_CONNECTED:
+        Serial.printf("[%u] Connected from IP: %s\n", num, webSocket->remoteIP(num).toString().c_str());
+        break;
+    case WStype_TEXT:
+        Serial.printf("[%u] Received message: %s\n", num, payload);
+        // Handle the received message from Python
+        break;
+    case WStype_ERROR:
+        Serial.printf("[%u] Error occurred\n", num);
+        break;
+    case WStype_BIN:
+        Serial.printf("[%u] Binary data received\n", num);
+        break;
+    case WStype_FRAGMENT_TEXT_START:
+        Serial.printf("[%u] Text fragment start\n", num);
+        break;
+    case WStype_FRAGMENT_BIN_START:
+        Serial.printf("[%u] Binary fragment start\n", num);
+        break;
+    case WStype_FRAGMENT:
+        Serial.printf("[%u] Fragment\n", num);
+        break;
+    case WStype_FRAGMENT_FIN:
+        Serial.printf("[%u] Fragment fin\n", num);
+        break;
+    }
+}
+
+void SimpleWebServer::pushUpdate()
+{
+    StaticJsonDocument<1024> jsonBuffer;
+    JsonObject json = jsonBuffer.to<JsonObject>();
+
+    for (const auto &pair : values)
+    {
+        switch (pair.second.valueType)
+        {
+        case INT_TYPE:
+            json[pair.first] = *(int *)(pair.second.valuePtr);
+            break;
+        case FLOAT_TYPE:
+            json[pair.first] = *(float *)(pair.second.valuePtr);
+            break;
+        case DOUBLE_TYPE:
+            json[pair.first] = *(double *)(pair.second.valuePtr);
+            break;
+        case BOOL_TYPE:
+            json[pair.first] = *(bool *)(pair.second.valuePtr);
+            break;
+        case STRING_TYPE:
+            json[pair.first] = *(String *)(pair.second.valuePtr);
+            break;
+        case STD_STRING_TYPE:
+            json[pair.first] = *(std::string *)(pair.second.valuePtr);
+            break;
+        }
+    }
+
+    String jsonString;
+    serializeJson(json, jsonString);
+
+    webSocket->broadcastTXT(jsonString);
 }

@@ -1,26 +1,25 @@
 #include "elements/BaseElement.h"
-#include "ElementVisitor.h"
 
-BaseElement::BaseElement(int size, String identifier, String label) : size(size), identifier(identifier), label(label) 
+BaseElement::BaseElement(int size, String identifier, String label) : size(size), identifier(identifier), label(label)
 {
 }
 
 bool BaseElement::hasIdentifier(String identifier)
 {
-    return this->identifier == identifier;   
+    return this->identifier == identifier;
 }
 
 String BaseElement::getIdentifier()
 {
-    return this->identifier; 
+    return this->identifier;
 }
 
 String BaseElement::getLabel()
 {
-    return this->label;   
+    return this->label;
 }
 
-void BaseElement::accept(ElementVisitor &visitor)
+void BaseElement::accept(BaseElementVisitor &visitor)
 {
     visitor.visit(*this);
 }

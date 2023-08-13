@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseElement.h"
+#include "elements/BaseElement.h"
 
 template <typename T>
 class InteractableElement : public BaseElement
@@ -29,7 +29,7 @@ public:
     }
 
     virtual String toString() = 0;
-    virtual void accept(ElementVisitor &visitor) override
+    virtual void accept(BaseElementVisitor &visitor) override
     {
         visitor.visit(*this);
     }
