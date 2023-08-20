@@ -1,17 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <title>ESP32 Web Server</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8">
+    <title>Arduino Webserver</title>
+    <meta name="description" content="Arduino Webserver">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/font.min.css">
+    <link rel="stylesheet" href="/css/normalize.min.css">
+    <link rel="stylesheet" href="/css/skeleton.min.css">
+    <link rel="stylesheet" href="/css/custom.min.css">
+    <link rel="icon" href="favicon.gif" type="image/gif">
 </head>
+
 <body>
-  <div class="container">
-    <h1>ESP32 Web Server</h1>
-    <input type="text" id="textInput" placeholder="Enter something...">
-    <button onclick="handleButtonClick('Button 1')">Button 1</button>
-    <button onclick="handleButtonClick('Button 2')">Button 2</button>
-    <button onclick="handleButtonClick('Button 3')">Button 3</button>
-  </div>
-  <script src="script.js"></script>
+    <div class="container">
+        <div class="row">
+            <div class="column" style="margin-top: 25%">
+                <h1>Arduino Web Server</h1>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 8px">
+            <div class="four columns"><label for="current_status">Current Status: </label>
+                <p id="current_status">Loading...</p>
+            </div>
+            <div class="four columns"></div>
+            <div class="four columns"><label for="sd_card_status">SD card status: </label>
+                <p id="sd_card_status">Loading...</p>
+            </div>
+            <div class="four columns"></div>
+            <div class="four columns"><label for="used_space">Used Space: </label>
+                <p id="used_space">Loading...</p>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 8px">
+            <div class="four columns"><label for="image_interval">Image Interval (s): </label>
+                <p id="image_interval">Loading...</p>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 8px">
+            <div class="four columns"><label for="image_interval">Image Interval</label> <input type="number"
+                    id="image_interval" placeholder="Enter a number"></div>
+            <div class="four columns"></div>
+            <div class="four columns"></div>
+            <div class="four columns"><button class="button-primary" id="start_stop_button"
+                    onclick="handleButton(event)">Start / Stop Gathering</button></div>
+        </div>
+        <script src='/script.js'></script>
 </body>
+
 </html>

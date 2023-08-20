@@ -7,7 +7,7 @@ Button::Button(int size, String identifier, String label, ElementCallback callba
 
 String Button::toString()
 {
-    return "<button class=\"button-primary\" id=\"" + identifier + "\"  onclick=\"handleButton(event)\">" + label + "</button>";
+    return "<button class=\"button-primary\" id=\"" + identifier + "\">" + label + "</button>";
 }
 
 void Button::accept(BaseElementVisitor &visitor)

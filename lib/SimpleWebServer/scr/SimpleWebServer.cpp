@@ -205,16 +205,16 @@ String SimpleWebServer::generateHTML()
     String htmlContent = "<!DOCTYPE html>\n";
     htmlContent += "<html lang=\"en\">\n";
     htmlContent += "<head>\n";
-    htmlContent += "  <meta charset=\"utf-8\">\n";
-    htmlContent += "  <title>Arduino Webserver</title>\n";
-    htmlContent += "  <meta name=\"description\" content=\"Arduino Webserver\">\n";
-    htmlContent += "  <meta name=\"author\" content=\"\">\n";
-    htmlContent += "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n";
-    htmlContent += "  <link rel=\"stylesheet\" href=\"/css/font.min.css\">\n";
-    htmlContent += "  <link rel=\"stylesheet\" href=\"/css/normalize.min.css\">\n";
-    htmlContent += "  <link rel=\"stylesheet\" href=\"/css/skeleton.min.css\">\n";
-    htmlContent += "  <link rel=\"stylesheet\" href=\"/css/custom.min.css\">\n";
-    htmlContent += "  <link rel=\"icon\" href=\"favicon.gif\" type=\"image/gif\">\n";
+    htmlContent += "\t<meta charset=\"utf-8\">\n";
+    htmlContent += "\t<title>Arduino Webserver</title>\n";
+    htmlContent += "\t<meta name=\"description\" content=\"Arduino Webserver\">\n";
+    htmlContent += "\t<meta name=\"author\" content=\"\">\n";
+    htmlContent += "\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n";
+    htmlContent += "\t<link rel=\"stylesheet\" href=\"/css/font.min.css\">\n";
+    htmlContent += "\t<link rel=\"stylesheet\" href=\"/css/normalize.min.css\">\n";
+    htmlContent += "\t<link rel=\"stylesheet\" href=\"/css/skeleton.min.css\">\n";
+    htmlContent += "\t<link rel=\"stylesheet\" href=\"/css/custom.min.css\">\n";
+    htmlContent += "\t<link rel=\"icon\" href=\"favicon.gif\" type=\"image/gif\">\n";
     htmlContent += "</head>\n";
     htmlContent += "<body>\n";
 
@@ -222,43 +222,48 @@ String SimpleWebServer::generateHTML()
     htmlContent += "<div class=\"container\">";
 
     // Add the title to the HTML content (centered and at the top)
-    htmlContent += "<div class=\"row\">";
-    htmlContent += "<div class=\"column\" style=\"margin-top: 25%\">";
-    htmlContent += "<h1>Arduino Web Server</h1>";
-    htmlContent += "</div>";
+    htmlContent += "\t<div class=\"row\">\n";
+    htmlContent += "\t\t<div class=\"column\" style=\"margin-top: 25%\">\n";
+    htmlContent += "\t\t<h1>Arduino Web Server</h1>\n";
+    htmlContent += "\t</div>\n";
 
     // Add buttons and text inputs to the HTML content
-    int currentRow = -1;
+    int currentRow = 0;
     int currentColumn = 0;
 
+    htmlContent += "\t<div class=\"row\" style=\"margin-top: 8px\">\n";
     for (const auto &pair : elements)
     {
         while (pair.first.getRow() > currentRow)
         {
-            htmlContent += "</div>";
-            htmlContent += "<div class=\"row\" style=\"margin-top: 8px\">";
+            htmlContent += "\t</div>\n";
+            htmlContent += "\t<div class=\"row\" style=\"margin-top: 8px\">\n";
+
             currentRow++;
             currentColumn = 0;
         }
-        htmlContent += "<div class=\"four columns\">";
-        while (pair.first.getColumn() != currentColumn)
+
+        htmlContent += "\t\t<div class=\"four columns\">\n";
+        while (pair.first.getColumn() > currentColumn)
         {
-            htmlContent += "</div>";
-            htmlContent += "<div class=\"four columns\">";
+            htmlContent += "\t\t</div>\n";
+            htmlContent += "\t\t<div class=\"four columns\">\n";
             currentColumn++;
         }
 
+        htmlContent += "\t\t\t";
         htmlContent += pair.second->toString();
-        htmlContent += "</div>";
+        htmlContent += "\n\t\t</div>\n"; // Close the .four .columns div
+        currentColumn++;
     }
 
-    htmlContent += "</div>"; // Close the .container div
+    htmlContent += "</div>\n"; // Close the .container div
 
     // Add a script tag to link the script.js file
-    htmlContent += "<script src='/script.js'></script>";
+    htmlContent += "<script src='/script.js'></script>\n";
 
-    htmlContent += "</body></html>";
-    // responseContent = ""; // Reset the response content for the next request
+    htmlContent += "</body></html>\n";
+
     return htmlContent;
 }
 

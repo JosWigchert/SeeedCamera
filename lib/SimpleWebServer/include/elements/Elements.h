@@ -7,3 +7,4 @@
 #include "TextBlock.h"
 #include "TextInput.h"
 #include "Toggle.h"
+#include "ComboBox.h"

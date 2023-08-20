@@ -70,3 +70,7 @@
 .footer-content {
     text-align: center;
 }
+
+.invalid-input {
+    border: 2px solid red !important;
+}

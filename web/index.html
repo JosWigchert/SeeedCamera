@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/custom.css">
 
-    <link rel="icon" href="favicon.gif" type="image/gif" >
+    <link rel="icon" href="favicon.gif" type="image/gif">
 </head>
 
 <body>
@@ -32,16 +32,51 @@
         <div class="row" style="margin-top: 8px">
             <div class="four columns">
                 <input type="hidden">
-                <!-- <label for="textInput0">label</label>
-        <input type="text" id="textInput0" placeholder="Enter something..."> -->
+                <label for="textInput0">label</label>
+                <input id="textInput0" placeholder="Enter something..." type="text">
             </div>
             <div class="four columns">
                 <label for="textInput1">label</label>
-                <input type="text" id="textInput1" placeholder="Enter something..." onkeydown="handleTextInput(event)">
+                <input id="textInput1" placeholder="Enter something..." type="email">
             </div>
             <div class="four columns">
                 <label for="textInput2">label</label>
-                <input type="text" id="textInput2" placeholder="Enter something..." onkeydown="handleTextInput(event)">
+                <input id="textInput2" placeholder="Enter something..." type="password" class="invalid-input">
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 8px">
+            <div class="four columns">
+                <input type="hidden">
+                <label for="textInput0">label</label>
+                <input id="textInput0" placeholder="Enter something..." type="search">
+            </div>
+            <div class="four columns">
+                <label for="textInput1">label</label>
+                <input id="textInput1" placeholder="Enter something..." type="tel">
+            </div>
+            <div class="four columns">
+                <label for="textInput2">label</label>
+                <input id="textInput2" placeholder="Enter something..." type="url">
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 8px">
+            <div class="four columns">
+                <input type="hidden">
+                <label for="textInput0">label</label>
+                <input id="textInput0" placeholder="Enter something..." type="number">
+            </div>
+            <div class="four columns">
+                <label for="combobox1">Select an option:</label>
+                <select id="combobox1" class="combobox u-three-quart-width">
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                    <option value="3" selected>Option 3</option>
+                </select>
+            </div>
+            <div class="four columns">
+
             </div>
         </div>
 
@@ -49,21 +84,21 @@
             <div class="four columns">
                 <label for="toggleSwitch" class="toggle-switch">
                     Toggle Switch:
-                    <input type="checkbox" id="toggleSwitch" onchange="handleToggle(event)">
+                    <input type="checkbox" id="toggleSwitch">
                     <span class="slider"></span>
                 </label>
             </div>
             <div class="four columns">
                 <label for="toggleSwitch1" class="toggle-switch">
                     Toggle Switch:
-                    <input type="checkbox" id="toggleSwitch1" onchange="handleToggle(event)">
+                    <input type="checkbox" id="toggleSwitch1">
                     <span class="slider"></span>
                 </label>
             </div>
             <div class="four columns">
                 <label for="toggleSwitch2" class="toggle-switch">
                     Toggle Switch:
-                    <input type="checkbox" id="toggleSwitch2" onchange="handleToggle(event)">
+                    <input type="checkbox" id="toggleSwitch2">
                     <span class="slider"></span>
                 </label>
             </div>
@@ -71,13 +106,13 @@
 
         <div class="row" style="margin-top: 8px">
             <div class="four columns">
-                <button class="button-primary" id="button1" onclick="handleButton(event)">Button element1</button>
+                <button class="button-primary" id="button1">Button element1</button>
             </div>
             <div class="four columns">
-                <button class="button-primary" id="button2" onclick="handleButton(event)">Button element2</button>
+                <button class="button-primary" id="button2">Button element2</button>
             </div>
             <div class="four columns">
-                <button class="button-primary" id="button3" onclick="handleButton(event)">Button element3</button>
+                <button class="button-primary" id="button3">Button element3</button>
             </div>
         </div>
 

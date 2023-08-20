@@ -7,7 +7,7 @@ Toggle::Toggle(int size, String identifier, String label, ElementCallback callba
 
 String Toggle::toString()
 {
-    return "<label for=\"" + identifier + "\" class=\"toggle-switch\"> " + label + ": <input type=\"checkbox\" id=\"" + identifier + "\" onchange=\"handleToggle(event)\"><span class=\"slider\"> </span> </label>";
+    return "<label for=\"" + identifier + "\" class=\"toggle-switch\"> " + label + ": <input type=\"checkbox\" id=\"" + identifier + "\"><span class=\"slider\"> </span> </label>";
 }
 
 void Toggle::accept(BaseElementVisitor &visitor)

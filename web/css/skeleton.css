@@ -558,6 +558,21 @@ form {
 
 /* Utilities
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
+.u-quart-width {
+    width: 25%;
+    box-sizing: border-box;
+}
+
+.u-half-width {
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.u-three-quart-width {
+    width: 75%;
+    box-sizing: border-box;
+}
+
 .u-full-width {
     width: 100%;
     box-sizing: border-box;
