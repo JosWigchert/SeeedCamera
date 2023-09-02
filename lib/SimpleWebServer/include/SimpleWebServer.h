@@ -1,8 +1,9 @@
 #pragma once
 
 #include <WiFi.h>
+#include <WiFiClient.h>
+#include <WiFiClientSecure.h>
 #include <WebServer.h>
-#include <WebSocketsServer.h>
 #include <map>
 
 #include "elements/BaseElement.h"
@@ -23,17 +24,20 @@ public:
     void addValueWatch(const char *id, void *valuePtr, ValueType valueType);
     void removeValueWatch(const char *id);
 
-    void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length);
     void pushUpdate();
 
 private:
+    const uint16_t CLIENT_COUNT = 10;
+
     WebServer server;
-    WebSocketsServer *webSocket;
+    WiFiServer *socket;
+    WiFiClient *clients;
     String responseContent;
 
     std::map<Position, BaseElement *> elements;
     std::map<const char *, ValueInfo> values;
 
+    void addClient(WiFiClient client);
     void handleRoot();
     void handleValues();
     void handleCallback();

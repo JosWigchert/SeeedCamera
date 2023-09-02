@@ -5,10 +5,23 @@
 #include <ArduinoJson.h>
 #include <SPIFFS.h>
 
-SimpleWebServer::SimpleWebServer() {}
+SimpleWebServer::SimpleWebServer()
+{
+    socket = new WiFiServer(81);
+    clients = new WiFiClient[CLIENT_COUNT];
+}
+
 SimpleWebServer::~SimpleWebServer()
 {
-    delete webSocket;
+    delete socket;
+
+    for (uint16_t i = 0; i < CLIENT_COUNT; i++)
+    {
+        if (clients[i].connected())
+            clients[i].stop();
+    }
+
+    delete[] clients;
 }
 
 void SimpleWebServer::begin()
@@ -23,20 +36,47 @@ void SimpleWebServer::begin()
     server.onNotFound([this]()
                       { handleFile(); });
 
-    webSocket = new WebSocketsServer(80);
-    webSocket->onEvent([&](uint8_t num, WStype_t type, uint8_t *payload, size_t length)
-                       { webSocketEvent(num, type, payload, length); });
+    socket->begin();
 }
 
 void SimpleWebServer::stop()
 {
     server.stop();
+
+    for (uint16_t i = 0; i < CLIENT_COUNT; i++)
+    {
+        if (clients[i].connected())
+            clients[i].stop();
+    }
+
+    socket->stopAll();
 }
 
 void SimpleWebServer::handleClient()
 {
     server.handleClient();
-    webSocket->loop();
+
+    WiFiClient client = socket->available();
+    if (client)
+    {
+        Serial.println("Client connected");
+        if (client.connected())
+        {
+            addClient(client);
+        }
+    }
+
+    for (uint16_t i = 0; i < CLIENT_COUNT; i++)
+    {
+        if (clients[i].connected())
+        {
+            if (clients[i].available())
+            {
+                String request = client.readStringUntil('\r');
+                Serial.println("Received: " + request);
+            }
+        }
+    }
 }
 
 void SimpleWebServer::addHTMLElement(Position position, BaseElement *element)
@@ -67,6 +107,18 @@ void SimpleWebServer::addValueWatch(const char *id, ValueInfo valueInfo)
 void SimpleWebServer::removeValueWatch(const char *id)
 {
     values.erase(id);
+}
+
+void SimpleWebServer::addClient(WiFiClient client)
+{
+    for (uint16_t i = 0; i < CLIENT_COUNT; i++)
+    {
+        if (!clients[i].connected())
+        {
+            clients[i] = client;
+            break;
+        }
+    }
 }
 
 void SimpleWebServer::handleRoot()
@@ -267,41 +319,6 @@ String SimpleWebServer::generateHTML()
     return htmlContent;
 }
 
-void SimpleWebServer::webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
-{
-    switch (type)
-    {
-    case WStype_DISCONNECTED:
-        Serial.printf("[%u] Disconnected!\n", num);
-        break;
-    case WStype_CONNECTED:
-        Serial.printf("[%u] Connected from IP: %s\n", num, webSocket->remoteIP(num).toString().c_str());
-        break;
-    case WStype_TEXT:
-        Serial.printf("[%u] Received message: %s\n", num, payload);
-        // Handle the received message from Python
-        break;
-    case WStype_ERROR:
-        Serial.printf("[%u] Error occurred\n", num);
-        break;
-    case WStype_BIN:
-        Serial.printf("[%u] Binary data received\n", num);
-        break;
-    case WStype_FRAGMENT_TEXT_START:
-        Serial.printf("[%u] Text fragment start\n", num);
-        break;
-    case WStype_FRAGMENT_BIN_START:
-        Serial.printf("[%u] Binary fragment start\n", num);
-        break;
-    case WStype_FRAGMENT:
-        Serial.printf("[%u] Fragment\n", num);
-        break;
-    case WStype_FRAGMENT_FIN:
-        Serial.printf("[%u] Fragment fin\n", num);
-        break;
-    }
-}
-
 void SimpleWebServer::pushUpdate()
 {
     StaticJsonDocument<1024> jsonBuffer;
@@ -335,5 +352,11 @@ void SimpleWebServer::pushUpdate()
     String jsonString;
     serializeJson(json, jsonString);
 
-    webSocket->broadcastTXT(jsonString);
+    for (uint16_t i = 0; i < CLIENT_COUNT; i++)
+    {
+        if (clients[i].connected())
+        {
+            clients[i].print(jsonString.c_str());
+        }
+    }
 }

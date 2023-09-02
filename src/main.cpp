@@ -341,6 +341,7 @@ void handleImageIntervalChange(String value)
     EEPROM.commit();
 
     Serial.printf("Image Interval changed to: %d\n", imageInterval);
+    webServer.pushUpdate();
 }
 
 void handleCameraOrientationChanged(int orientation)
